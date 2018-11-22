@@ -135,14 +135,14 @@ try:
     @app.route('/')
     def index():
         global board, node_id
-        return template('server/index.tpl', board_title='Vessel {}'.format(node_id), board_dict=sorted({"0":board,}.iteritems()), members_name_string='YOUR NAME')
+        return template('server/index.tpl', board_title='Vessel {}'.format(node_id), board_dict=sorted(board.iteritems()), members_name_string='YOUR NAME')
 
 
     @app.get('/board')
     def get_board():
         global board, node_id
         print board
-        return template('server/boardcontents_template.tpl',board_title='Vessel {}'.format(node_id), board_dict=sorted({"0":board,}.iteritems()))
+        return template('server/boardcontents_template.tpl',board_title='Vessel {}'.format(node_id), board_dict=sorted(board.iteritems()))
 
     # ------------------------------------------------------------------------------------------------------
 
@@ -216,9 +216,9 @@ try:
 
     @app.post('/propagate/<action>/<element_id>')
     def propagation_received(action, element_id):
-            '''
-            Decides on the function to call depending on the action requested
-            '''
+        '''
+        Decides on the function to call depending on the action requested
+        '''
         global next
 
         if action=="add":
