@@ -1,4 +1,4 @@
-**File server.py
+**File server.py**
 
 Implement the Leader Election algorithm there.
 All required functions should be call in the main() before the call to the app.
