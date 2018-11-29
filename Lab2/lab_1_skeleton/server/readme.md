@@ -1,8 +1,13 @@
 **File server.py**
 
 Implement the Leader Election algorithm there.
-All required functions should be called in main() section before the call to the app.
 
 Implemented functions:
 - send_id(): appends the ID of the current node to the provided data dictionary, and sends the new data to the next node
-- elect_leader(): once every node knows the random id of everyone else, each of them elects the new leader
+- elect_leader(): if the data has been propagated to everyone, each of the nodes elects the new leader
+- long_live_the_leader(): if this is the leader, propagate its ID to everyone (not the random one!!) via the /propagate/coordinate route
+Function propagate_to_vessels() also works differently depending on who's using it (leader or lambda).
+
+Implemented routes:
+- /propagate/elect/<random_id>: this route receives the new payload and leads to the elect_leader() function
+- /propagate/coordinate: this route shares the ID of the leader with everyone
