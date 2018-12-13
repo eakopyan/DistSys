@@ -88,7 +88,7 @@ try:
     param is_propagated_call: the action comes (not) from another vessel
     '''
     def add_new_element_to_store(entry_sequence, element, is_propagated_call=False):
-        global board, node_id, my_seq, start_time, end_time, consistency_slot
+        global board, node_id, my_seq, end_time
 
         return_seq = entry_sequence
 
