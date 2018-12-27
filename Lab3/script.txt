@@ -1,0 +1,44 @@
+Main task:
+------------- OVERVIEW -------------------------------------------------------------------------------
+
+Our system has a simple topology of 8 hosts, without a centralized leader or ring topology.
+
+Each host has access to a blackboard. When an action is received, the corresponding function (add/
+modify/delete) is performed. Each propagation is made through a thread to avoid inconsistency.
+
+To do so, the main change with the previous labs is to check who the action comes from (through the
+is_propagated_call variable). 
+
+Our messages are formated that way: the entry sequence is {sequence number + ID of the sender}, and the
+message is appended to that tuple. The sequence number works like an index of actions: thus, only the 
+greatest sequence number action is performed in the blackboard, since it is the last sent. If the 
+update is local (not propagated), the sequence number is incremented as usual.
+
+
+------------- CORNER CASES ----------------------------------------------------------------------------
+
+To keep trace of any modify or delete action, each host has its own Modify - and Delete - history 
+dictionaries. These dictionaries store mod/del requests and the ID of the host that sent the request.
+
+Fisrt corner case: 2 or more hosts try to delete the same post.
+Actions are spread through threads. Hence, simultaneous actions are impossible (there is always a FIRST
+action). Hence, for deletion: if the message exists in the board, it is deleted. Else, it is added to 
+the Delete dictionary instead of returning an error.
+
+Second corner case: the host receives an action for an inexisting message.
+Anytime a mod/del request is received, the host checks if the element is in the board: if it is, it 
+performs the action. Else (i.e. the message doesn't exist yet on the host's board), if there exists a
+message in the modify history dictionary with the same sequence number, it is overwritten by the last 
+received one. If there is no such message, it is added to the modify dictionary. In case where the 
+action is deletion, it is simpler: the message is automatically stored in the delete dictionary.
+
+Each time an element from the history dictionaries is used (hence updated in the blackboard), it is
+deleted to avoid doubles.
+
+
+------------- CONSISTENCY TIME -----------------------------------------------------------------------
+
+We have 3 global variables to get the time by which consistency is achieved. Each node sends 20 
+messages at the same time. The clock starts when the  first transmission is performed. Then, after the 
+given number of exchanged messages, the clock stops and we compute the consistency time, which 
+corresponds to the longest time slot between the beginning of the simulation and its end on each node.
